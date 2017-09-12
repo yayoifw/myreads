@@ -4,7 +4,7 @@ import './App.css'
 class Book extends Component {
   render() {
     const { book } = this.props
-    const bookImage = `url(${book.thumbnail})`
+    const bookImage = `url(${book.imageLinks.smallThumbnail})`
     console.log('bookImage', bookImage)
     return (
         <div className="book">

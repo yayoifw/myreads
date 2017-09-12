@@ -7,7 +7,7 @@ class GridBooks extends Component {
     return (
       <ol className="books-grid">
         {books.map(aBook => (
-          <li>
+          <li key={aBook.id}>
             <Book book={aBook} />
           </li>
         ))}
