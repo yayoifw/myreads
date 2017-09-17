@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 class Book extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
-    handleBookMove: PropTypes.func
+    handleBookMove: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -17,6 +17,7 @@ class Book extends Component {
     const selectedShelf = event.target.value;
     this.props.handleBookMove(selectedShelf, this.props.book)
   }
+  
   render() {
     const { book } = this.props
     const bookImage = `url(${book.imageLinks.smallThumbnail})`

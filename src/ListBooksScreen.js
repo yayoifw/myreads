@@ -17,7 +17,6 @@ class ListBooksScreen extends Component {
   }
 
   handleBookMoveShelf = (selectedShelf, book) => {
-    console.log(selectedShelf)
     // make a copy of bookList
     let newBooks = [...this.state.books]
     newBooks.map(aBook => {
