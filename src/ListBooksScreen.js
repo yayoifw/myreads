@@ -4,10 +4,6 @@ import BookShelf from './BookShelf'
 import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
 
-const testData = require('./books.json')
-const testBookList = testData.books
-
-testBookList.filter(abook => (abook.shelf === "read"))
 
 class ListBooksScreen extends Component {
   state = {
@@ -25,7 +21,7 @@ class ListBooksScreen extends Component {
     // make a copy of bookList
     let newBooks = [...this.state.books]
     newBooks.map(aBook => {
-      // update target book's shelf
+      // update the target book's shelf
       if (aBook.id === book.id) {
         aBook.shelf = selectedShelf
       }
@@ -39,7 +35,9 @@ class ListBooksScreen extends Component {
     const { books } = this.state
     return (
 <div className="list-books">
-<Link to="/search" classNamne="search-book">Search</Link>
+  <div className="open-search">
+    <Link to="/search">Search</Link>
+  </div>
   <div className="list-books-title">
     <h1>MyReads</h1>
   </div>

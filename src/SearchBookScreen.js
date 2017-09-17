@@ -14,7 +14,6 @@ class SearchBookScreen extends Component {
       query: newSearch
     })
     BooksAPI.search(newSearch.trim(), 10).then(books => {
-      console.log('search result ', books)
       this.setState({
         books
       })
