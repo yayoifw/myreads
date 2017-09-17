@@ -20,7 +20,11 @@ class SearchBookScreen extends Component {
     })
   }
   handleBookMoveShelf = (selectedShelf, book) => {
-    BooksAPI.update(book, selectedShelf)
+    BooksAPI.update(book, selectedShelf).then(response => {
+      this.setState(state => ({
+        books: state.books.filter(aBook => aBook.id !== book.id)
+      }))
+    })
   }
 
   render() {
