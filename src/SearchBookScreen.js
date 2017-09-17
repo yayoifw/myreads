@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import GridBooks from './GridBooks'
 
 class SearchBookScreen extends Component {
   state = {
+    books: [],
     query: ''
   }
 
@@ -11,15 +13,19 @@ class SearchBookScreen extends Component {
     this.setState({
       query: newSearch
     })
-    if ((newSearch.length > 3) && newSearch.endsWith(' ')) {
-      BooksAPI.search(newSearch.trim(), 10).then(books => {
-        console.log('search result ', books)
+    BooksAPI.search(newSearch.trim(), 10).then(books => {
+      console.log('search result ', books)
+      this.setState({
+        books
       })
-    }
+    })
+  }
+  handleBookMoveShelf = (selectedShelf, book) => {
+    BooksAPI.update(book, selectedShelf)
   }
 
   render() {
-    const { query } = this.state
+    const { query, books } = this.state
     return (
 <div className="search-books">
   <div className="search-books-bar">
@@ -32,7 +38,8 @@ class SearchBookScreen extends Component {
     </div>
   </div>
   <div className="search-books-results">
-    <ol className="books-grid"></ol>
+    <GridBooks books={books}
+             handleBookMove={this.handleBookMoveShelf}/>
   </div>
 </div>
     )

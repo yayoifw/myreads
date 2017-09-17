@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import GridBooks from './GridBooks'
 import BookShelf from './BookShelf'
+import * as BooksAPI from './BooksAPI'
+import { Link } from 'react-router-dom'
 
 const testData = require('./books.json')
 const testBookList = testData.books
@@ -9,7 +11,13 @@ testBookList.filter(abook => (abook.shelf === "read"))
 
 class ListBooksScreen extends Component {
   state = {
-    books: testBookList
+    books: []
+  }
+
+  componentDidMount() {
+    BooksAPI.getAll().then(books => {
+      this.setState({ books })
+    })
   }
 
   handleBookMoveShelf = (selectedShelf, book) => {
@@ -21,15 +29,17 @@ class ListBooksScreen extends Component {
       if (aBook.id === book.id) {
         aBook.shelf = selectedShelf
       }
+      return aBook;
     })
     this.setState({ books: newBooks })
-    // TODO: Call API to update bookList
+    BooksAPI.update(book, selectedShelf)
   }
 
   render() {
     const { books } = this.state
     return (
 <div className="list-books">
+<Link to="/search" classNamne="search-book">Search</Link>
   <div className="list-books-title">
     <h1>MyReads</h1>
   </div>
