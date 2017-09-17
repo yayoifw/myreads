@@ -25,7 +25,7 @@ class Book extends Component {
 
   render() {
     const { book } = this.props
-    const bookImage = `url(${book.imageLinks.smallThumbnail})`
+    const bookImage = (typeof book.imageLinks !== "undefined") ? `url(${book.imageLinks.smallThumbnail})` : ''
     return (
         <div className="book">
           <div className="book-top">
