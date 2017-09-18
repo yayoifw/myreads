@@ -8,10 +8,6 @@ class Book extends Component {
     handleBookMove: PropTypes.func.isRequired
   }
 
-  state = {
-    shelf: "none"
-  }
-
   constructor() {
     super()
     this.handleChange = this.handleChange.bind(this)
@@ -31,7 +27,7 @@ class Book extends Component {
           <div className="book-top">
             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: bookImage }}></div>
             <div className="book-shelf-changer">
-              <select value={(typeof book.shelf !== "undefined") ? book.shelf : this.state.shelf } onChange={this.handleChange}>
+              <select value={(typeof book.shelf !== "undefined") ? book.shelf : "none" } onChange={this.handleChange}>
                 <option value="none" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
