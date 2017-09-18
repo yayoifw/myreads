@@ -8,12 +8,7 @@ class Book extends Component {
     handleBookMove: PropTypes.func.isRequired
   }
 
-  constructor() {
-    super()
-    this.handleChange = this.handleChange.bind(this)
-  }
-
-  handleChange(event) {
+  handleChange = (event) => {
     const selectedShelf = event.target.value;
     this.setState({ shelf: selectedShelf })
     this.props.handleBookMove(selectedShelf, this.props.book)
