@@ -2,15 +2,27 @@ import React, { Component } from 'react'
 import './App.css'
 import PropTypes from 'prop-types'
 
+/**
+ * Book.js
+ * This component displays a Book with a drop-down menu
+ * to change the book-shelf it belongs to.
+ * When the user selects a shelf, it notifies the parent
+ * component using handleBookMove() callback.
+ */
 class Book extends Component {
   static propTypes = {
     book: PropTypes.object.isRequired,
     handleBookMove: PropTypes.func.isRequired
   }
 
+  /**
+  * This function calls handleBookMove() callback
+  * to inform parent component that user has
+  * moved book's shelf value.
+  * @param event -- select option select event.
+  */
   handleChange = (event) => {
     const selectedShelf = event.target.value;
-    this.setState({ shelf: selectedShelf })
     this.props.handleBookMove(selectedShelf, this.props.book)
   }
 

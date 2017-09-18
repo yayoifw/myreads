@@ -1,6 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * BookShelf.js
+ * This component displays a shelf with a book category name.
+ * It is a container component to hold the books.
+ */
 const BookShelf = (props) => {
   const { name, children } = props
   return (
