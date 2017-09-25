@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import GridBooks from './GridBooks'
 import PropTypes from 'prop-types'
+import Rx from 'rxjs/Rx'
 
 /**
  * SearchBookScreen.js
@@ -43,20 +44,31 @@ class SearchBookScreen extends Component {
         books: []
       })
     } else {
-      BooksAPI.search(searchTerm, 10).then(books => {
-        // check the returned book type is valid.
-        if ((typeof books === "undefined") || (!Array.isArray(books))) {
-          this.setState({
-            books: []
-          })
-        } else {
-          // update the book with the search result
-          this.setState({
-            books
-          })
-        }
-      })
+      //this.performSearchAPI(searchTerm)
+      this.performSearchViaRx(searchTerm)
     }
+  }
+
+  performSearchViaRx(searchTerm) {
+    //const source = Rx.Observable.fromPromise(BooksAPI.search(searchTerm, 10)).flatMap(Rx.Observable.from);
+    const source = Rx.Observable.fromPromise(BooksAPI.search(searchTerm, 10));
+    source.debounce(() => Rx.Observable.interval(5000)).subscribe(response => console.log('response', response));
+  }
+
+  performSearchAPI(searchTerm) {
+    BooksAPI.search(searchTerm, 10).then(books => {
+      // check the returned book type is valid.
+      if ((typeof books === "undefined") || (!Array.isArray(books))) {
+        this.setState({
+          books: []
+        })
+      } else {
+        // update the book with the search result
+        this.setState({
+          books
+        })
+      }
+    })
   }
 
   /**
