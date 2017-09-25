@@ -25,6 +25,22 @@ class SearchBookScreen extends Component {
   }
 
   /**
+   * Constructor for the component.
+   * Initializes searchRxSubject which is 
+   * used to debounce search input before calling BooksAPI.
+   * The source of subject is emitted from performSearchViaRx().
+   * 
+   * @param props
+   */
+  constructor(props) {
+    super(props)
+    // create a Subject instance
+    this.searchRxSubject = new Rx.Subject()
+    // subscribe to it just like an Observable
+    this.searchRxSubject.debounceTime(300).subscribe(x => this.performSearchAPI(x));
+  }
+
+  /**
    * This function runs the book search by calling
    * BooksAPI.search() API call and update the
    * state.books with the search result.
@@ -44,15 +60,18 @@ class SearchBookScreen extends Component {
         books: []
       })
     } else {
-      //this.performSearchAPI(searchTerm)
       this.performSearchViaRx(searchTerm)
     }
   }
 
+  /**
+   * This function convert searchTerm 
+   * into the source of searchRxSubject
+   * by calling next() - which emits the value.
+   * @param searchTerm
+   */
   performSearchViaRx(searchTerm) {
-    //const source = Rx.Observable.fromPromise(BooksAPI.search(searchTerm, 10)).flatMap(Rx.Observable.from);
-    const source = Rx.Observable.fromPromise(BooksAPI.search(searchTerm, 10));
-    source.debounce(() => Rx.Observable.interval(5000)).subscribe(response => console.log('response', response));
+    this.searchRxSubject.next(searchTerm);
   }
 
   performSearchAPI(searchTerm) {
