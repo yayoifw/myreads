@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import GridBooks from './GridBooks'
+import PropTypes from 'prop-types'
 
 /**
  * SearchBookScreen.js
@@ -12,6 +13,11 @@ import GridBooks from './GridBooks'
  * Book search result is obtained from the server using BooksAPI.
  */
 class SearchBookScreen extends Component {
+  static propTypes = {
+    handleBookMoveShelf: PropTypes.func.isRequired,
+    booksOnShelf: PropTypes.array.isRequired
+  }
+
   state = {
     books: [],
     query: ''
@@ -54,23 +60,32 @@ class SearchBookScreen extends Component {
   }
 
   /**
-   * This function moves the book to the selected shelf
-   * by calling BooksAPI.update() API call.
-   * After the shelf update is completed, the book is
-   * removed from the search result.
-   * @param selectedShelf -- name of the user selected shelf
-   * @param book -- a book to move to the selected shelf
+   * This function assigns the "shelf" attribute
+   * of the book by comparing the book with the list of
+   * books already on the shelf.
+   * If book is on the shelf, "shelf" value is assigned,
+   * otherwise "none" is assigned.
+   * @param books -- search result books
+   * @param booksOnShelf -- the list of books on shelf
+   * @returns the list of books with shelf value assigned.
    */
-  handleBookMoveShelf = (selectedShelf, book) => {
-    BooksAPI.update(book, selectedShelf).then(response => {
-      this.setState(state => ({
-        books: state.books.filter(aBook => aBook.id !== book.id)
-      }))
+  updateBooksShelfAttribute = (books, booksOnShelf) => {
+    let updatedBooks = books.map(aBook => {
+      aBook.shelf = "none"
+      booksOnShelf.forEach(aBookOnShelf => {
+        if (aBook.id === aBookOnShelf.id) {
+          aBook.shelf = aBookOnShelf.shelf
+        }
+      })
+      return aBook;
     })
+    return updatedBooks
   }
 
   render() {
     const { query, books } = this.state
+    const { handleBookMoveShelf, booksOnShelf } = this.props
+    let books2display = this.updateBooksShelfAttribute(books, booksOnShelf)
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -80,7 +95,7 @@ class SearchBookScreen extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <GridBooks books={books} handleBookMove={this.handleBookMoveShelf}/>
+          <GridBooks books={books2display} handleBookMove={handleBookMoveShelf}/>
         </div>
       </div>
     )
