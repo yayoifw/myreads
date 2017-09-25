@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import GridBooks from './GridBooks'
 import PropTypes from 'prop-types'
+import Rx from 'rxjs/Rx'
 
 /**
  * SearchBookScreen.js
@@ -21,6 +22,22 @@ class SearchBookScreen extends Component {
   state = {
     books: [],
     query: ''
+  }
+
+  /**
+   * Constructor for the component.
+   * Initializes searchRxSubject which is 
+   * used to debounce search input before calling BooksAPI.
+   * The source of subject is emitted from performSearchViaRx().
+   * 
+   * @param props
+   */
+  constructor(props) {
+    super(props)
+    // create a Subject instance
+    this.searchRxSubject = new Rx.Subject()
+    // subscribe to it just like an Observable
+    this.searchRxSubject.debounceTime(300).subscribe(x => this.performSearchAPI(x));
   }
 
   /**
@@ -43,20 +60,34 @@ class SearchBookScreen extends Component {
         books: []
       })
     } else {
-      BooksAPI.search(searchTerm, 10).then(books => {
-        // check the returned book type is valid.
-        if ((typeof books === "undefined") || (!Array.isArray(books))) {
-          this.setState({
-            books: []
-          })
-        } else {
-          // update the book with the search result
-          this.setState({
-            books
-          })
-        }
-      })
+      this.performSearchViaRx(searchTerm)
     }
+  }
+
+  /**
+   * This function convert searchTerm 
+   * into the source of searchRxSubject
+   * by calling next() - which emits the value.
+   * @param searchTerm
+   */
+  performSearchViaRx(searchTerm) {
+    this.searchRxSubject.next(searchTerm);
+  }
+
+  performSearchAPI(searchTerm) {
+    BooksAPI.search(searchTerm, 10).then(books => {
+      // check the returned book type is valid.
+      if ((typeof books === "undefined") || (!Array.isArray(books))) {
+        this.setState({
+          books: []
+        })
+      } else {
+        // update the book with the search result
+        this.setState({
+          books
+        })
+      }
+    })
   }
 
   /**
